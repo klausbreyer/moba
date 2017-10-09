@@ -12,13 +12,11 @@ Version: 0.0.1
 Author URI: https://klaus-breyer.de
 */
 
-//require_once(dirname(__FILE__).'/interface.php');
-
 add_action( 'admin_menu', 'moba_plugin_menu' );
 
 function moba_plugin_menu() {
-    add_menu_page('Mobile Batch Upload', 'Mobile Batch Upload', 'manage_options', 'moba/interface.php');
-}
 
+    add_menu_page('Mobile Batch', 'Mobile Batch', 'manage_options', 'moba/interface.php');
+}
 
 ?>
