@@ -15,8 +15,14 @@ Author URI: https://klaus-breyer.de
 add_action( 'admin_menu', 'moba_plugin_menu' );
 
 function moba_plugin_menu() {
+	add_menu_page( 'Mobile Batch', 'Mobile Batch', 'manage_options', 'moba/interface.php' );
+}
 
-    add_menu_page('Mobile Batch', 'Mobile Batch', 'manage_options', 'moba/interface.php');
+add_action( 'init', 'register_moba_styles' );
+
+function register_moba_styles() {
+	wp_register_style( 'moba', plugin_dir_url( __FILE__ ) . 'moba.css' );
+	wp_enqueue_style( 'moba' );
 }
 
 ?>
