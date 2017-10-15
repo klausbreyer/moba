@@ -21,8 +21,8 @@ function moba_plugin_menu() {
 add_action( 'init', 'register_moba_styles' );
 
 function register_moba_styles() {
-	wp_register_style( 'moba', plugin_dir_url( __FILE__ ) . 'moba.css' );
-	wp_enqueue_style( 'moba' );
+	wp_enqueue_style( 'moba', plugin_dir_url( __FILE__ ) . 'moba.css' );
+	wp_enqueue_script( 'moba', plugin_dir_url( __FILE__ ) . 'moba.js' );
 }
 
 ?>

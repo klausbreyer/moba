@@ -25,4 +25,9 @@
         </label><br/>
         <input type="submit" value="Submit">
     </form>
+
+    <h3>Direct Access Link (send this to your mobile phone)</h3>
+    <textarea readonly id="moba-copy-url"><?php menu_page_url( 'moba/interface.php' ); ?></textarea>
+
+    <button id="moba-copy-button">Copy to Clipboard</button>
 </div>
