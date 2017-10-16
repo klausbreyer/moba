@@ -1,14 +1,14 @@
 <?php
 /**
  * @package moba
- * @version 0.0.1
+ * @version 0.1
  */
 /*
 Plugin Name: moba
-Plugin URI: https://klaus-breyer.de/projekte/moba
+Plugin URI: https://klaus-breyer.de/projekte/moba/
 Description: mobile batch uploading plugin
 Author: Klaus Breyer
-Version: 0.0.1
+Version: 0.1
 Author URI: https://klaus-breyer.de
 */
 

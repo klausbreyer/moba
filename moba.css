@@ -29,9 +29,11 @@ input[type=submit] {
 }
 
 #moba-copy-url {
-    height: 50px;
+    height: 40px;
+    font-size: 13px;
+    
 }
 #moba-copy-button {
-    width: 28%;
     background-color: #bbdbc1;
+    width: 150px;
 }
