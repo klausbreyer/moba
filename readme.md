@@ -12,6 +12,14 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 A handy little plugin for batch uploading pictures from your mobile phone into a wordpress posting.
+This is useful, because the mobile app often have some hickups when uploading a lot or large (or both) pictures. Through this plugin you can upload all of them from your mobile browser. 
+
+Given that you have LTE or a stable Wifi, there should be no hickups. 
+
+== Installation ==
+1. Copy the folder `moba` into the directory `wp-content/plugins/` and activate the plugin.
+2. Go to the "Mobile Batch" Dashboard page to start uploading
+3. Leave a positive rating.. :)
 
 == Screenshots ==
 
