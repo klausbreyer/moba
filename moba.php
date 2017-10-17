@@ -2,7 +2,7 @@
 /**
  * @package moba
  * @version 0.1
- */
+
 /*
 Plugin Name: moba
 Plugin URI: https://klaus-breyer.de/projekte/moba/

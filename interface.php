@@ -10,7 +10,7 @@
 
 	<?php endif; ?>
 
-    <form action="" method="post" enctype="multipart/form-data">
+    <form action="" method="post" enctype="multipart/form-data" class="moba__form">
         <label>Title:</br>
             <input type="text" name="title" value="<?php echo @$_POST['title'] ?>"/></label><br/>
         <label>Content:</br>
@@ -23,11 +23,14 @@
                 <option <?php echo @$_POST['post_status'] ? 'draft' : null ?>>draft</option>
             </select>
         </label><br/>
-        <input type="submit" value="Submit">
+        <label>Done?
+            <input type="submit" value="Submit">
+        </label>
     </form>
+    <div class="moba__url">
+        <b>Direct Access Link (send this to your mobile phone):</b>
+        <textarea readonly class="url__area"><?php menu_page_url( 'moba/interface.php' ); ?></textarea>
 
-    <b>Direct Access Link (send this to your mobile phone):</b>
-    <textarea readonly id="moba-copy-url"><?php menu_page_url( 'moba/interface.php' ); ?></textarea>
-
-    <button id="moba-copy-button">Copy to Clipboard</button>
+        <button class="url__button">Copy to Clipboard</button>
+    </div>
 </div>

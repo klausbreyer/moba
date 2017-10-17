@@ -1,9 +1,9 @@
 jQuery( document ).ready(function() {
-    jQuery('#moba-copy-button').click(function() {
-        jQuery('#moba-copy-url').select();
+    jQuery('.url__button').click(function() {
+        jQuery('.url__area').select();
         document.execCommand('copy');
     });
-    jQuery('#moba-copy-url').focus(function() {
-        jQuery('#moba-copy-url').select();
+    jQuery('.url__area').focus(function() {
+        jQuery('.url__area').select();
     });
 });

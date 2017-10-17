@@ -1,5 +1,4 @@
 === mobile batch ===
-
 Contributors: klausbreyer
 Author: Klaus Breyer
 Author URI: http://klaus-breyer.de
@@ -8,6 +7,7 @@ Tags: upload, mobile, images, pictures, batch,
 Requires at least: 3.3
 Tested up to: 4.8.3
 Stable tag: 0.1
+Requires PHP: 5.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 

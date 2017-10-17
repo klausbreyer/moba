@@ -2,9 +2,11 @@
     padding-right: 10px;
     max-width: 500px;
 }
+
 form {
     margin-bottom: 50px;
 }
+
 input, select {
     width: 100%;
     max-width: 500px;
@@ -15,11 +17,10 @@ textarea {
     height: 150px;
 }
 
-
 input[type=submit] {
     background-color: #bbdbc1;
     height: 3em !important;
-    border-radius: 0;
+    -webkit-appearance: none;
 }
 
 .messages {
@@ -28,12 +29,24 @@ input[type=submit] {
     padding: 0.5em;
 }
 
-#moba-copy-url {
+input, button, select, textarea {
+    -webkit-border-radius: 5px !important;
+    border-radius: 5px;
+}
+
+.moba__url .url__area {
     height: 40px;
     font-size: 13px;
-    
+
 }
-#moba-copy-button {
+
+.moba__url .url__button {
     background-color: #bbdbc1;
     width: 150px;
+}
+
+@media (max-device-width: 768px) {
+    .moba__url {
+        display: none;
+    }
 }
