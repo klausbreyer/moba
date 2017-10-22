@@ -1,14 +1,16 @@
 
 <?php
 //print_r($_FILES);
-//print_r( $_POST );
+//if(isset($_POST['file'])) {
+//	wp_send_json_success($_POST);
+//}
 $messages = [];
 if ( isset( $_POST['title'] ) && isset( $_POST['content'] ) ) {
 	$post_data = [
 		'post_title'   => $_POST['title'],
 		'post_content' => $_POST['content'],
 		'post_status'   => $_POST['post_status'],
-		'post_type'    => 'post',
+		'post_type'    => 'create_post_and_init_upload',
 	];
 	if ( $post_id = wp_insert_post( $post_data ) ) {
 		$messages[] = 'Post created';

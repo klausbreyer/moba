@@ -12,13 +12,14 @@
 
     <form action="" method="post" enctype="multipart/form-data" class="moba__form">
         <label>Title:</br>
-            <input type="text" name="title" value="<?php echo @$_POST['title'] ?>"/></label><br/>
+            <input type="text" id="title" name="title" value="<?php echo @$_POST['title'] ?>"/></label><br/>
         <label>Content:</br>
-            <textarea name="content"><?php echo @$_POST['content'] ?></textarea></label><br/>
+            <textarea name="content" id="content"><?php echo @$_POST['content'] ?></textarea></label><br/>
         <label>Files (multiple):</br>
             <input type="file" name="upload[]" multiple/></label><br/>
+        <a href="#" onclick="debugFiles(); return false;">debugFiles</a>
         <label>Status:</br>
-            <select name="post_status">
+            <select name="post_status" id="post_status">
                 <option <?php echo @$_POST['post_status'] ? 'publish' : null ?> >publish</option>
                 <option <?php echo @$_POST['post_status'] ? 'draft' : null ?>>draft</option>
             </select>
