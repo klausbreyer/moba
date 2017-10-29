@@ -100,7 +100,7 @@ function moba_upload_files(i) {
         data: form,
         contentType: false,
         success: function (data, textStatus, request) {
-            moba_message('Uploaded File ' + file.name + ' ..');
+            moba_message('Uploaded File ' + (i + 1) + '/' + jQuery(':file').get(0).files.length + '..');
             attachments.push(data.data);
             if (i + 1 < jQuery(':file').get(0).files.length) {
                 moba_upload_files(++i);
