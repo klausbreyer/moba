@@ -1,4 +1,3 @@
-<?php require_once( dirname( __FILE__ ) . '/processing.php' ); ?>
 <div class="moba">
     <h2>Mobile Batch Upload</h2>
         <div class="messages">

@@ -1,73 +1,74 @@
-
 <?php
-//print_r($_FILES);
-//if(isset($_POST['file'])) {
-//	wp_send_json_success($_POST);
-//}
-$messages = [];
-if ( isset( $_POST['title'] ) && isset( $_POST['content'] ) ) {
-	$post_data = [
-		'post_title'   => $_POST['title'],
-		'post_content' => $_POST['content'],
-		'post_status'   => $_POST['post_status'],
-		'post_type'    => 'moba_create_post_and_init_upload',
-	];
-	if ( $post_id = wp_insert_post( $post_data ) ) {
-		$messages[] = 'Post created';
-	}
 
-	$attachment_urls    = [];
-	$attachment_ids     = [];
-	$attachment_content = "";
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
 
-	if ( isset( $_FILES['moba_upload_files']['name'][0] ) && strlen( $_FILES['moba_upload_files']['name'][0] ) > 1 ) {
-		for ( $i = 0; $i < count( $_FILES['moba_upload_files']['name'] ); $i ++ ) {
-			$file_array = [
-				'name'     => $_FILES['moba_upload_files']['name'][ $i ],
-				'type'     => $_FILES['moba_upload_files']['type'][ $i ],
-				'tmp_name' => $_FILES['moba_upload_files']['tmp_name'][ $i ],
-				'error'    => $_FILES['moba_upload_files']['error'][ $i ],
-				'size'     => $_FILES['moba_upload_files']['size'][ $i ],
-			];
-			$desc       = sprintf( 'mobile batch uploaded on %s', date( 'd.m.Y - H:i' ) );
+add_action( 'wp_ajax_moba_async_upload', 'moba_async_upload' );
+function moba_async_upload() {
 
-			// do the validation and storage stuff
-			$attachment_id = media_handle_sideload( $file_array, $post_id, $desc );
+	$attachment_id = media_handle_sideload( $_FILES['file'], mysqli_real_escape_string( $_POST['post_id'] ) );
 
-			// If error storing permanently, unlink
-			if ( is_wp_error( $attachment_id ) ) {
-				@unlink( $file_array['tmp_name'] );
+	if ( is_wp_error( $attachment_id ) ) {
+		wp_send_json_error( [ 'error' => 'media_handle_sideload', 'attachment_id' => $attachment_id ] );
+		wp_die();
+	} else {
+		wp_send_json_success( [
+			'id'  => $attachment_id,
+			'url' => wp_get_attachment_url( $attachment_id ),
+		] );
 
-				return $attachment_id;
-			}
-
-			$attachment_url     = wp_get_attachment_url( $attachment_id );
-			$attachment_ids[]   = $attachment_id;
-			$attachment_urls[]  = $attachment_url;
-			$attachment_content .= sprintf( '<br /><img src="%s" />', $attachment_url );
-			$messages[]         = sprintf( 'Uploaded %s', $file_array['name'] );
-		}
-	}
-
-
-	$post_data = [
-		'ID'           => $post_id,
-		'post_title'   => $_POST['title'],
-		'post_status'   => $_POST['post_status'],
-		'post_content' => sprintf( '%s%s', $_POST['content'], $attachment_content ),
-	];
-
-
-	if ( $post_id = wp_insert_post( $post_data ) ) {
-		$messages[] = 'Post saved';
-	}
-
-	if ( isset( $attachment_ids[0] ) ) {
-		if ( set_post_thumbnail( $post_id, $attachment_ids[0] ) ) {
-			$messages[] = 'Thumbnail saved';
-		}
+		wp_die();
 	}
 }
 
+add_action( 'wp_ajax_moba_async_create_post', 'moba_async_create_post' );
+function moba_async_create_post() {
+	$post_data = [
+		'post_title'   => mysqli_real_escape_string( $_POST['title'] ),
+		'post_content' => mysqli_real_escape_string( $_POST['content'] ),
+		'post_status'  => mysqli_real_escape_string( $_POST['post_status'] ),
+		'post_type'    => 'post',
+	];
+	if ( $post_id = wp_insert_post( $post_data ) ) {
+		wp_send_json_success( [ 'post_id' => $post_id ] );
+		wp_die();
+	} else {
+		wp_send_json_error( [ 'error' => 'wp_insert_post' ] );
+		wp_die();
+	}
 
-?>
+}
+
+add_action( 'wp_ajax_moba_async_finalize_post', 'moba_async_finalize_post' );
+function moba_async_finalize_post() {
+
+	$attachment_content = '';
+	foreach ( $_POST['attachment_urls'] as $attachment ) {
+		$attachment_content .= sprintf( '<br /><img src="%s" />', mysqli_real_escape_string( $attachment ) );
+	}
+
+	$post_data = [
+		'ID'           => mysqli_real_escape_string( $_POST['post_id'] ),
+		'post_title'   => mysqli_real_escape_string( $_POST['title'] ),
+		'post_status'  => mysqli_real_escape_string( $_POST['post_status'] ),
+		'post_content' => sprintf( '%s%s', mysqli_real_escape_string( $_POST['content'] ), $attachment_content ),
+	];
+
+
+	if ( ! $post_id = wp_insert_post( $post_data ) ) {
+		wp_send_json_error( [ 'error' => 'wp_insert_post' ] );
+		wp_die();
+	}
+
+
+	if ( ! set_post_thumbnail( $post_id, mysqli_real_escape_string( $_POST['attachment_ids'][0] ) ) ) {
+
+		wp_send_json_error( [ 'error' => 'set_post_thumbnail' ] );
+		wp_die();
+	}
+
+	wp_send_json_success( [ 'post_id' => $post_id ] );
+	wp_die();
+
+}
