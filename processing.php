@@ -10,7 +10,7 @@ if ( isset( $_POST['title'] ) && isset( $_POST['content'] ) ) {
 		'post_title'   => $_POST['title'],
 		'post_content' => $_POST['content'],
 		'post_status'   => $_POST['post_status'],
-		'post_type'    => 'create_post_and_init_upload',
+		'post_type'    => 'moba_create_post_and_init_upload',
 	];
 	if ( $post_id = wp_insert_post( $post_data ) ) {
 		$messages[] = 'Post created';
@@ -20,14 +20,14 @@ if ( isset( $_POST['title'] ) && isset( $_POST['content'] ) ) {
 	$attachment_ids     = [];
 	$attachment_content = "";
 
-	if ( isset( $_FILES['upload']['name'][0] ) && strlen( $_FILES['upload']['name'][0] ) > 1 ) {
-		for ( $i = 0; $i < count( $_FILES['upload']['name'] ); $i ++ ) {
+	if ( isset( $_FILES['moba_upload_files']['name'][0] ) && strlen( $_FILES['moba_upload_files']['name'][0] ) > 1 ) {
+		for ( $i = 0; $i < count( $_FILES['moba_upload_files']['name'] ); $i ++ ) {
 			$file_array = [
-				'name'     => $_FILES['upload']['name'][ $i ],
-				'type'     => $_FILES['upload']['type'][ $i ],
-				'tmp_name' => $_FILES['upload']['tmp_name'][ $i ],
-				'error'    => $_FILES['upload']['error'][ $i ],
-				'size'     => $_FILES['upload']['size'][ $i ],
+				'name'     => $_FILES['moba_upload_files']['name'][ $i ],
+				'type'     => $_FILES['moba_upload_files']['type'][ $i ],
+				'tmp_name' => $_FILES['moba_upload_files']['tmp_name'][ $i ],
+				'error'    => $_FILES['moba_upload_files']['error'][ $i ],
+				'size'     => $_FILES['moba_upload_files']['size'][ $i ],
 			];
 			$desc       = sprintf( 'mobile batch uploaded on %s', date( 'd.m.Y - H:i' ) );
 

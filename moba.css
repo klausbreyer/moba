@@ -24,9 +24,21 @@ input[type=submit] {
 }
 
 .messages {
-    border: 1px dashed #bbdbc1;
+    display: none;
+    border: 1px dashed #90AB95;
+    color: #90AB95;
     opacity: 0.7;
     padding: 0.5em;
+    margin-bottom: 1em;
+}
+
+.errors {
+    display: none;
+    border: 1px dashed indianred;
+    color: indianred;
+    opacity: 0.7;
+    padding: 0.5em;
+    margin-bottom: 1em;
 }
 
 input, button, select, textarea {

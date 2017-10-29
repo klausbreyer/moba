@@ -25,7 +25,6 @@ function register_moba_styles() {
 	wp_enqueue_script( 'moba', plugin_dir_url( __FILE__ ) . 'moba.js' );
 }
 
-// Same handler function...
 add_action( 'wp_ajax_moba_async_upload', 'moba_async_upload' );
 function moba_async_upload() {
 
@@ -44,14 +43,13 @@ function moba_async_upload() {
 	}
 }
 
-// Same handler function...
 add_action( 'wp_ajax_moba_async_create_post', 'moba_async_create_post' );
 function moba_async_create_post() {
 	$post_data = [
 		'post_title'   => $_POST['title'],
 		'post_content' => $_POST['content'],
 		'post_status'  => $_POST['post_status'],
-		'post_type'    => 'create_post_and_init_upload',
+		'post_type'    => 'post',
 	];
 	if ( $post_id = wp_insert_post( $post_data ) ) {
 		wp_send_json_success( [ 'post_id' => $post_id ] );
@@ -63,16 +61,12 @@ function moba_async_create_post() {
 
 }
 
-// Same handler function...
 add_action( 'wp_ajax_moba_async_finalize_post', 'moba_async_finalize_post' );
 function moba_async_finalize_post() {
-	echo $_POST['attachments'];
-	echo urldecode($_POST['attachments']);
-	$attachments = json_decode(urldecode($_POST['attachments']));
-	var_dump($attachments);
+
 	$attachment_content = '';
-	foreach ( $attachments as $attachment ) {
-		$attachment_content .= sprintf( '<br /><img src="%s" />', $attachment['url'] );
+	foreach ( $_POST['attachment_urls'] as $attachment ) {
+		$attachment_content .= sprintf( '<br /><img src="%s" />', $attachment );
 	}
 
 	$post_data = [
@@ -89,7 +83,7 @@ function moba_async_finalize_post() {
 	}
 
 
-	if ( ! set_post_thumbnail( $post_id, $attachments[0]['id'] ) ) {
+	if ( ! set_post_thumbnail( $post_id, $_POST['attachment_ids'][0] ) ) {
 
 		wp_send_json_error( [ 'error' => 'set_post_thumbnail' ] );
 		wp_die();
