@@ -12,6 +12,13 @@ function moba_errors(message) {
     jQuery('.errors').append(message + '<br />');
 }
 
+function moba_lock_form() {
+    jQuery('form input, form select, form textarea').attr('disabled', true);
+}
+
+function moba_free_form() {
+    jQuery('form input, form select, form textarea').attr('disabled', false);
+}
 
 function moba_before_process() {
     attachments = [];
@@ -21,8 +28,8 @@ function moba_before_process() {
     jQuery('.errors').empty();
     jQuery('.messages').hide();
     jQuery('.messages').empty();
-    jQuery('form input, form select, form textarea').attr('disabled', true);
 
+    moba_lock_form();
     moba_message('Starting upload, please wait..');
 }
 
@@ -31,8 +38,9 @@ function moba_after_process() {
     attachments = [];
     post_id = 0;
 
-    jQuery('form input, form select, form textarea').attr('disabled', false);
-    jQuery('form input, form select, form textarea').val('');
+
+    jQuery('form input:text, form input:file, form textarea').val('');
+    moba_free_form();
     moba_message('Successfully finished!');
 }
 
@@ -42,14 +50,17 @@ function moba_submit() {
 
     if (jQuery('#title').val().length === 0) {
         moba_errors('Please insert title!');
+        moba_free_form();
         return false;
     }
     if (jQuery('#content').val().length === 0) {
         moba_errors('Please insert content!');
+        moba_free_form();
         return false;
     }
     if (jQuery(':file').get(0).files.length === 0) {
         moba_errors('Please select files!');
+        moba_free_form();
         return false;
     }
 
@@ -72,19 +83,31 @@ function moba_create_post_and_init_upload() {
         data: form,
         contentType: false,
         success: function (data, textStatus, request) {
-            post_id = data.data.post_id;
-            moba_message('Post #' + post_id + ' created..');
-            moba_upload_files(0);
+            if (data.success === true) {
+                console.log(data);
+                post_id = parseInt(data.data.post_id);
+                moba_message('Post #' + post_id + ' created..');
+                moba_upload_files(0);
+
+            }
+            else {
+                console.log('error');
+                console.log(data);
+                moba_errors(data.data.error);
+                moba_free_form();
+            }
         },
         error: function (data, textStatus, request) {
             console.log('error');
             console.log(data);
+            moba_free_form();
         }
     });
 }
 
 
 function moba_upload_files(i) {
+    console.log('upload' + i);
     var file = jQuery(':file').get(0).files[i];
     var form = new FormData();
     form.append('action', 'moba_async_upload');
@@ -100,19 +123,29 @@ function moba_upload_files(i) {
         data: form,
         contentType: false,
         success: function (data, textStatus, request) {
-            moba_message('Uploaded File ' + (i + 1) + '/' + jQuery(':file').get(0).files.length + '..');
-            attachments.push(data.data);
-            if (i + 1 < jQuery(':file').get(0).files.length) {
-                moba_upload_files(++i);
+            if (data.success === true) {
+
+                moba_message('Uploaded File ' + (i + 1) + '/' + jQuery(':file').get(0).files.length + '..');
+                attachments.push(data.data);
+                if (i + 1 < jQuery(':file').get(0).files.length) {
+                    moba_upload_files(++i);
+                }
+                else {
+                    moba_finalize_post();
+                }
             }
             else {
-                moba_finalize_post();
+                console.log('error');
+                console.log(data);
+                moba_errors(data.data.error);
+                moba_free_form();
             }
 
         },
         error: function (data, textStatus, request) {
             console.log('error');
             console.log(data);
+            moba_free_form();
         }
     });
 }
@@ -121,6 +154,7 @@ function moba_upload_files(i) {
 function moba_finalize_post() {
     var form = new FormData();
     form.append('action', 'moba_async_finalize_post');
+    form.append('post_id', post_id);
     form.append('title', jQuery('#title').val());
     form.append('content', jQuery('#content').val());
     form.append('post_status', jQuery('#post_status').val());
@@ -140,13 +174,23 @@ function moba_finalize_post() {
         data: form,
         contentType: false,
         success: function (data, textStatus, request) {
-            moba_message('Thumbnail saved..');
-            moba_message('Post updated..');
-            moba_after_process();
+            if (data.success === true) {
+                moba_message('Thumbnail saved..');
+                moba_message('Post updated..');
+                moba_after_process();
+
+            }
+            else {
+                console.log('error');
+                console.log(data);
+                moba_errors(data.data.error);
+                moba_free_form();
+            }
         },
         error: function (data, textStatus, request) {
             console.log('error');
             console.log(data);
+            moba_free_form();
         }
     });
 }

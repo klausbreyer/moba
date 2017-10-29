@@ -12,7 +12,7 @@
  * Author URI: https://klaus-breyer.de
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+//if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 add_action( 'admin_menu', 'moba_plugin_menu' );
 function moba_plugin_menu() {
@@ -24,3 +24,5 @@ function register_moba_styles() {
 	wp_enqueue_style( 'moba', plugin_dir_url( __FILE__ ) . 'moba.css' );
 	wp_enqueue_script( 'moba', plugin_dir_url( __FILE__ ) . 'moba.js' );
 }
+
+require_once(  plugin_dir_path( __FILE__ ) . 'processing.php' );
