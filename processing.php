@@ -24,7 +24,7 @@ function moba_async_create_post() {
 
 
 	$post_data = [
-		'post_title'   => sanitize_title( $_POST['title'] ),
+		'post_title'   => sanitize_text_field( $_POST['title'] ),
 		'post_content' => sanitize_textarea_field( $_POST['content'] ),
 		'post_status'  => $_POST['post_status'],
 		'post_type'    => 'post',
@@ -46,6 +46,13 @@ function moba_async_upload() {
 		wp_send_json_error( [ 'error' => 'post_id_corrupt' ] );
 		wp_die();
 	}
+
+	if($_FILES['file']['type'] !== 'image/png' && $_FILES['file']['type'] !== 'image/jpeg' ) {
+		wp_send_json_error( [ 'error' => 'mime_type_corrupt' ] );
+		wp_die();
+	}
+	
+	$_FILES['file']['name'] = sanitize_file_name($_FILES['file']['name']);
 
 	$attachment_id = media_handle_sideload( $_FILES['file'], (int) $_POST['post_id'] );
 
@@ -107,7 +114,7 @@ function moba_async_finalize_post() {
 
 	$post_data = [
 		'ID'           => (int) $_POST['post_id'],
-		'post_title'   => sanitize_title( $_POST['title'] ),
+		'post_title'   => sanitize_text_field( $_POST['title'] ),
 		'post_status'  => $_POST['post_status'],
 		'post_content' => sprintf( '%s%s', sanitize_textarea_field( $_POST['content'] ), $attachment_content ),
 	];
