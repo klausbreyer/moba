@@ -109,6 +109,7 @@ function moba_create_post_and_init_upload() {
 function moba_upload_files(i) {
     console.log('upload' + i);
     var file = jQuery(':file').get(0).files[i];
+    console.log(file);
     var form = new FormData();
     form.append('action', 'moba_async_upload');
     form.append('post_id', post_id);
@@ -125,7 +126,7 @@ function moba_upload_files(i) {
         success: function (data, textStatus, request) {
             if (data.success === true) {
 
-                moba_message('Uploaded File ' + (i + 1) + '/' + jQuery(':file').get(0).files.length + '..');
+                moba_message('Uploaded File ' + (i + 1) + '/' + jQuery(':file').get(0).files.length + ' ' + file.name + '..');
                 attachments.push(data.data);
                 if (i + 1 < jQuery(':file').get(0).files.length) {
                     moba_upload_files(++i);

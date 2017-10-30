@@ -51,7 +51,7 @@ function moba_async_upload() {
 		wp_send_json_error( [ 'error' => 'mime_type_corrupt' ] );
 		wp_die();
 	}
-	
+
 	$_FILES['file']['name'] = sanitize_file_name($_FILES['file']['name']);
 
 	$attachment_id = media_handle_sideload( $_FILES['file'], (int) $_POST['post_id'] );
