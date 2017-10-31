@@ -163,7 +163,7 @@ function moba_async_finalize_post() {
 
 	$attachment_content = '';
 	foreach ( $_POST['attachment_urls'] as $attachment ) {
-		$attachment_content .= sprintf( '<br /><img src="%s" />', esc_url_raw( $attachment ) );
+		$attachment_content .= sprintf( '<br /><br /><img src="%s" />', esc_url_raw( $attachment ) );
 	}
 
 	//process
