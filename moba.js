@@ -119,6 +119,8 @@ function moba_upload_files(i) {
     form.append('_wpnonce', jQuery('input[name="_wpnonce"]').val());
     form.append('_wp_http_referer', jQuery('input[name="_wp_http_referer"]').val());
 
+    moba_message('Start uploading File ' + (i + 1) + '/' + jQuery(':file').get(0).files.length + '..');
+
     jQuery.ajax({
         url: ajaxurl,
         type: 'POST',
@@ -129,8 +131,7 @@ function moba_upload_files(i) {
         contentType: false,
         success: function (data, textStatus, request) {
             if (data.success === true) {
-
-                moba_message('Uploaded File ' + (i + 1) + '/' + jQuery(':file').get(0).files.length + ' ' + file.name + '..');
+                moba_message('Finished uploading File ' + (i + 1) + '/' + jQuery(':file').get(0).files.length + '..');
                 attachment_urls.push(data.data.url);
                 attachment_ids.push(data.data.id);
                 if (i + 1 < jQuery(':file').get(0).files.length) {
