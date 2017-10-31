@@ -72,7 +72,7 @@ function moba_create_post_and_init_upload() {
     form.append('action', 'moba_async_create_post');
     form.append('title', jQuery('#title').val());
     form.append('content', jQuery('#content').val());
-    form.append('post_status', jQuery('#post_status').val());
+    form.append('status', jQuery('#status').val());
 
     jQuery.ajax({
         url: ajaxurl,
@@ -158,7 +158,7 @@ function moba_finalize_post() {
     form.append('post_id', post_id);
     form.append('title', jQuery('#title').val());
     form.append('content', jQuery('#content').val());
-    form.append('post_status', jQuery('#post_status').val());
+    form.append('status', jQuery('#status').val());
 
     for (var i = 0; i < attachments.length; i++) {
         form.append('attachment_ids[]', attachments[i].id);

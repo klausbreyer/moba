@@ -34,3 +34,7 @@ The very first public release.
 * Upload photos as batch selection
 * Choose if should be a draft or published
 * Copy the link to your mobile phone
+
+
+== Debugging ==
+* If only one post is being created, but none or not all are uploaded: Depending on the server load, it may be helpful to increase the memory limit. It should be at least 100m, better 200m.

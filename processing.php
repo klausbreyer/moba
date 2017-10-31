@@ -7,28 +7,38 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 add_action( 'wp_ajax_moba_async_create_post', 'moba_async_create_post' );
 function moba_async_create_post() {
-	if ( ! is_string( $_POST['title'] ) ) {
+
+	//sanitize
+	$post_title          = (string) sanitize_text_field( $_POST['title'] );
+	$post_status         = (string) sanitize_text_field( $_POST['status'] );
+	$post_content        = (string) sanitize_textarea_field( $_POST['content'] );
+
+	//validate
+	if ( strlen( $post_title ) < 1 ) {
 		wp_send_json_error( [ 'error' => 'post_title_corrupt' ] );
 		wp_die();
 	}
 
-	if ( ! is_string( $_POST['content'] ) ) {
+	if ( strlen( $post_content ) < 1 ) {
 		wp_send_json_error( [ 'error' => 'post_content_corrupt' ] );
 		wp_die();
 	}
 
-	if ( ! is_string( $_POST['post_status'] ) || ( $_POST['post_status'] !== 'draft' && $_POST['post_status'] !== 'publish' ) ) {
+	if ( $post_status !== 'draft' && $post_status !== 'publish' ) {
 		wp_send_json_error( [ 'error' => 'post_status_corrupt' ] );
 		wp_die();
 	}
 
 
+	//process
 	$post_data = [
-		'post_title'   => sanitize_text_field( $_POST['title'] ),
-		'post_content' => sanitize_textarea_field( $_POST['content'] ),
-		'post_status'  => $_POST['post_status'],
+		'post_title'   => $post_title,
+		'post_content' => $post_content,
+		'post_status'  => $post_status,
 		'post_type'    => 'post',
 	];
+
+	//save
 	if ( $post_id = wp_insert_post( $post_data ) ) {
 		wp_send_json_success( [ 'post_id' => $post_id ] );
 		wp_die();
@@ -42,19 +52,55 @@ function moba_async_create_post() {
 
 add_action( 'wp_ajax_moba_async_upload', 'moba_async_upload' );
 function moba_async_upload() {
-	if ( (int) $_POST['post_id'] < 1 ) {
+
+	//sanitize
+	$file_name = sanitize_file_name( $_FILES['file']['name'] );
+	$file_size = (int) $_FILES['file']['size'];
+	$file_type = (string) $_FILES['file']['type'];
+	$tmp_name  = tempnam( sys_get_temp_dir(), 'moba' );
+	$post_id   = (int) $_POST['post_id'];
+	$image     = imagecreatefromstring( file_get_contents( $_FILES['file']['tmp_name'] ) );
+	$exif      = exif_read_data( $_FILES['file']['tmp_name'] );
+
+
+	//validate
+	if ( $post_id < 1 ) {
 		wp_send_json_error( [ 'error' => 'post_id_corrupt' ] );
 		wp_die();
 	}
 
-	if($_FILES['file']['type'] !== 'image/png' && $_FILES['file']['type'] !== 'image/jpeg' ) {
+	if ( $file_type !== 'image/png' && $file_type !== 'image/jpeg' ) {
 		wp_send_json_error( [ 'error' => 'mime_type_corrupt' ] );
 		wp_die();
 	}
 
-	$_FILES['file']['name'] = sanitize_file_name($_FILES['file']['name']);
 
-	$attachment_id = media_handle_sideload( $_FILES['file'], (int) $_POST['post_id'] );
+	//process
+	if ( ! empty( $exif['Orientation'] ) ) {
+		switch ( $exif['Orientation'] ) {
+			case 8:
+				$image = imagerotate( $image, 90, 0 );
+				break;
+			case 3:
+				$image = imagerotate( $image, 180, 0 );
+				break;
+			case 6:
+				$image = imagerotate( $image, - 90, 0 );
+				break;
+		}
+	}
+	imagejpeg( $image, $tmp_name );
+
+	$file_array = [
+		'name'     => $file_name,
+		'type'     => $file_type,
+		'tmp_name' => $tmp_name,
+		'error'    => 0,
+		'size'     => $file_size,
+	];
+
+	//save
+	$attachment_id = media_handle_sideload( $file_array, $post_id );
 
 	if ( is_wp_error( $attachment_id ) ) {
 		wp_send_json_error( [ 'error' => 'media_handle_sideload', 'attachment_id' => $attachment_id ] );
@@ -69,26 +115,40 @@ function moba_async_upload() {
 	}
 }
 
-
 add_action( 'wp_ajax_moba_async_finalize_post', 'moba_async_finalize_post' );
 function moba_async_finalize_post() {
-	if ( (int) $_POST['post_id'] < 1 ) {
+
+	//sanitize
+	$post_id             = (int) $_POST['post_id'];
+	$post_title          = (string) sanitize_text_field( $_POST['title'] );
+	$post_status         = (string) sanitize_text_field( $_POST['status'] );
+	$post_content        = (string) sanitize_textarea_field( $_POST['content'] );
+	$first_attachment_id = (int) $_POST['attachment_ids'][0];
+
+
+	//Validate
+	if ( $post_id < 1 ) {
 		wp_send_json_error( [ 'error' => 'post_id_corrupt' ] );
 		wp_die();
 	}
 
-	if ( ! is_string( $_POST['title'] ) ) {
+	if ( strlen( $post_title ) < 1 ) {
 		wp_send_json_error( [ 'error' => 'post_title_corrupt' ] );
 		wp_die();
 	}
 
-	if ( ! is_string( $_POST['content'] ) ) {
+	if ( strlen( $post_content ) < 1 ) {
 		wp_send_json_error( [ 'error' => 'post_content_corrupt' ] );
 		wp_die();
 	}
 
-	if ( ! is_string( $_POST['post_status'] ) || ( $_POST['post_status'] !== 'draft' && $_POST['post_status'] !== 'publish' ) ) {
+	if ( $post_status !== 'draft' && $post_status !== 'publish' ) {
 		wp_send_json_error( [ 'error' => 'post_status_corrupt' ] );
+		wp_die();
+	}
+
+	if ( $first_attachment_id < 1 ) {
+		wp_send_json_error( [ 'error' => 'post_attachment_id_corrupt' ] );
 		wp_die();
 	}
 
@@ -99,34 +159,27 @@ function moba_async_finalize_post() {
 		}
 	}
 
-	foreach ( $_POST['attachment_ids'] as $id ) {
-		$id = (int) $id;
-		if ( $id < 1 ) {
-			wp_send_json_error( [ 'error' => 'post_attachment_ids_corrupt' ] );
-			wp_die();
-		}
-	}
-
 	$attachment_content = '';
 	foreach ( $_POST['attachment_urls'] as $attachment ) {
 		$attachment_content .= sprintf( '<br /><img src="%s" />', esc_url_raw( $attachment ) );
 	}
 
+	//process
 	$post_data = [
-		'ID'           => (int) $_POST['post_id'],
-		'post_title'   => sanitize_text_field( $_POST['title'] ),
-		'post_status'  => $_POST['post_status'],
-		'post_content' => sprintf( '%s%s', sanitize_textarea_field( $_POST['content'] ), $attachment_content ),
+		'ID'           => $post_id,
+		'post_title'   => $post_title,
+		'post_status'  => $post_status,
+		'post_content' => sprintf( '%s%s', $post_content, $attachment_content ),
 	];
 
-
+	//save
 	if ( ! $post_id = wp_insert_post( $post_data ) ) {
 		wp_send_json_error( [ 'error' => 'wp_insert_post' ] );
 		wp_die();
 	}
 
 
-	if ( ! set_post_thumbnail( $post_id, (int) $_POST['attachment_ids'][0] ) ) {
+	if ( ! set_post_thumbnail( $post_id, $first_attachment_id ) ) {
 
 		wp_send_json_error( [ 'error' => 'set_post_thumbnail' ] );
 		wp_die();
