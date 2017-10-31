@@ -1,5 +1,6 @@
 var post_id = 0;
-var attachments = [];
+var attachment_urls = [];
+var attachment_ids = [];
 
 function moba_message(message) {
     jQuery('.messages').show();
@@ -21,7 +22,8 @@ function moba_free_form() {
 }
 
 function moba_before_process() {
-    attachments = [];
+    attachment_urls = [];
+    attachment_ids = [];
     post_id = 0;
 
     jQuery('.errors').hide();
@@ -35,7 +37,8 @@ function moba_before_process() {
 
 
 function moba_after_process() {
-    attachments = [];
+    attachment_urls = [];
+    attachment_ids = [];
     post_id = 0;
 
 
@@ -84,7 +87,6 @@ function moba_create_post_and_init_upload() {
         contentType: false,
         success: function (data, textStatus, request) {
             if (data.success === true) {
-                console.log(data);
                 post_id = parseInt(data.data.post_id);
                 moba_message('Post #' + post_id + ' created..');
                 moba_upload_files(0);
@@ -107,9 +109,7 @@ function moba_create_post_and_init_upload() {
 
 
 function moba_upload_files(i) {
-    console.log('upload' + i);
     var file = jQuery(':file').get(0).files[i];
-    console.log(file);
     var form = new FormData();
     form.append('action', 'moba_async_upload');
     form.append('post_id', post_id);
@@ -127,7 +127,8 @@ function moba_upload_files(i) {
             if (data.success === true) {
 
                 moba_message('Uploaded File ' + (i + 1) + '/' + jQuery(':file').get(0).files.length + ' ' + file.name + '..');
-                attachments.push(data.data);
+                attachment_urls.push(data.data.url);
+                attachment_ids.push(data.data.id);
                 if (i + 1 < jQuery(':file').get(0).files.length) {
                     moba_upload_files(++i);
                 }
@@ -160,11 +161,12 @@ function moba_finalize_post() {
     form.append('content', jQuery('#content').val());
     form.append('status', jQuery('#status').val());
 
-    for (var i = 0; i < attachments.length; i++) {
-        form.append('attachment_ids[]', attachments[i].id);
-        form.append('attachment_urls[]', attachments[i].url);
+    for (var i = 0; i < attachment_urls.length; i++) {
+        form.append('attachment_urls[]', attachment_urls[i]);
     }
-
+    for (var i = 0; i < attachment_ids.length; i++) {
+        form.append('attachment_ids[]', attachment_ids[i]);
+    }
 
     jQuery.ajax({
         url: ajaxurl,
@@ -179,7 +181,6 @@ function moba_finalize_post() {
                 moba_message('Thumbnail saved..');
                 moba_message('Post updated..');
                 moba_after_process();
-
             }
             else {
                 console.log('error');
