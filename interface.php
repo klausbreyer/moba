@@ -22,6 +22,12 @@
                 <option>draft</option>
             </select>
         </label><br/>
+        <label>Comments:</br>
+            <select name="comment_status" id="comment_status">
+                <option>open</option>
+                <option>closed</option>
+            </select>
+        </label><br/>
         <label>Done?
             <input type="submit" value="Submit">
         </label>

@@ -75,7 +75,6 @@ function moba_create_post_and_init_upload() {
     form.append('action', 'moba_async_create_post');
     form.append('title', jQuery('input[name="title"]').val());
     form.append('content', jQuery('textarea[name="content"]').val());
-    form.append('status', jQuery('select[name="status"]').val());
     form.append('_wpnonce', jQuery('input[name="_wpnonce"]').val());
     form.append('_wp_http_referer', jQuery('input[name="_wp_http_referer"]').val());
 
@@ -165,6 +164,7 @@ function moba_finalize_post() {
     form.append('title', jQuery('input[name="title"]').val());
     form.append('content', jQuery('textarea[name="content"]').val());
     form.append('status', jQuery('select[name="status"]').val());
+    form.append('comment_status', jQuery('select[name="comment_status"]').val());
     form.append('_wpnonce', jQuery('input[name="_wpnonce"]').val());
     form.append('_wp_http_referer', jQuery('input[name="_wp_http_referer"]').val());
 

@@ -12,7 +12,6 @@ function moba_async_create_post() {
 
 	//sanitize
 	$post_title          = (string) sanitize_text_field( $_POST['title'] );
-	$post_status         = (string) sanitize_text_field( $_POST['status'] );
 	$post_content        = (string) sanitize_textarea_field( $_POST['content'] );
 
 	//validate
@@ -26,18 +25,14 @@ function moba_async_create_post() {
 		wp_die();
 	}
 
-	if ( $post_status !== 'draft' && $post_status !== 'publish' ) {
-		wp_send_json_error( [ 'error' => 'post_status_corrupt' ] );
-		wp_die();
-	}
 
 
 	//process
 	$post_data = [
 		'post_title'   => $post_title,
 		'post_content' => $post_content,
-		'post_status'  => $post_status,
-		'post_type'    => 'post',
+		'post_status'  => 'draft',
+		'post_type'    => 'post'
 	];
 
 	//save
@@ -124,6 +119,7 @@ function moba_async_finalize_post() {
 	$post_id             = (int) $_POST['post_id'];
 	$post_title          = (string) sanitize_text_field( $_POST['title'] );
 	$post_status         = (string) sanitize_text_field( $_POST['status'] );
+	$comment_status        = (string) sanitize_text_field( $_POST['comment_status'] );
 	$post_content        = (string) sanitize_textarea_field( $_POST['content'] );
 	$first_attachment_id = (int) end($_POST['attachment_ids']);
 
@@ -154,6 +150,11 @@ function moba_async_finalize_post() {
 		wp_die();
 	}
 
+	if ( $comment_status !== 'closed' && $comment_status !== 'open' ) {
+		wp_send_json_error( [ 'error' => 'comment_status_corrupt' ] );
+		wp_die();
+	}
+
 	foreach ( $_POST['attachment_urls'] as $attachment ) {
 		if ( filter_var( $attachment, FILTER_VALIDATE_URL ) === false ) {
 			wp_send_json_error( [ 'error' => 'post_attachment_urls_corrupt' ] );
@@ -172,6 +173,7 @@ function moba_async_finalize_post() {
 		'post_title'   => $post_title,
 		'post_status'  => $post_status,
 		'post_content' => sprintf( '%s%s', $post_content, $attachment_content ),
+		'comment_status' => $comment_status
 	];
 
 	//save
