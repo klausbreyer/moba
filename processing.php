@@ -125,7 +125,7 @@ function moba_async_finalize_post() {
 	$post_title          = (string) sanitize_text_field( $_POST['title'] );
 	$post_status         = (string) sanitize_text_field( $_POST['status'] );
 	$post_content        = (string) sanitize_textarea_field( $_POST['content'] );
-	$first_attachment_id = (int) $_POST['attachment_ids'][0];
+	$first_attachment_id = (int) end($_POST['attachment_ids']);
 
 
 	//Validate
