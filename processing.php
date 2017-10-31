@@ -8,6 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action( 'wp_ajax_moba_async_create_post', 'moba_async_create_post' );
 function moba_async_create_post() {
 
+	check_ajax_referer( 'moba-upload' );
+
 	//sanitize
 	$post_title          = (string) sanitize_text_field( $_POST['title'] );
 	$post_status         = (string) sanitize_text_field( $_POST['status'] );

@@ -51,17 +51,17 @@ function moba_submit() {
 
     moba_before_process();
 
-    if (jQuery('#title').val().length === 0) {
+    if (jQuery('input[name="title"]').val().length === 0) {
         moba_errors('Please insert title!');
         moba_free_form();
         return false;
     }
-    if (jQuery('#content').val().length === 0) {
+    if (jQuery('textarea[name="content"]').val().length === 0) {
         moba_errors('Please insert content!');
         moba_free_form();
         return false;
     }
-    if (jQuery(':file').get(0).files.length === 0) {
+    if (jQuery('input:file').get(0).files.length === 0) {
         moba_errors('Please select files!');
         moba_free_form();
         return false;
@@ -73,9 +73,11 @@ function moba_submit() {
 function moba_create_post_and_init_upload() {
     var form = new FormData();
     form.append('action', 'moba_async_create_post');
-    form.append('title', jQuery('#title').val());
-    form.append('content', jQuery('#content').val());
-    form.append('status', jQuery('#status').val());
+    form.append('title', jQuery('input[name="title"]').val());
+    form.append('content', jQuery('textarea[name="content"]').val());
+    form.append('status', jQuery('select[name="status"]').val());
+    form.append('_wpnonce', jQuery('input[name="_wpnonce"]').val());
+    form.append('_wp_http_referer', jQuery('input[name="_wp_http_referer"]').val());
 
     jQuery.ajax({
         url: ajaxurl,
@@ -114,6 +116,8 @@ function moba_upload_files(i) {
     form.append('action', 'moba_async_upload');
     form.append('post_id', post_id);
     form.append('file', file);
+    form.append('_wpnonce', jQuery('input[name="_wpnonce"]').val());
+    form.append('_wp_http_referer', jQuery('input[name="_wp_http_referer"]').val());
 
     jQuery.ajax({
         url: ajaxurl,
@@ -157,9 +161,11 @@ function moba_finalize_post() {
     var form = new FormData();
     form.append('action', 'moba_async_finalize_post');
     form.append('post_id', post_id);
-    form.append('title', jQuery('#title').val());
-    form.append('content', jQuery('#content').val());
-    form.append('status', jQuery('#status').val());
+    form.append('title', jQuery('input[name="title"]').val());
+    form.append('content', jQuery('textarea[name="content"]').val());
+    form.append('status', jQuery('select[name="status"]').val());
+    form.append('_wpnonce', jQuery('input[name="_wpnonce"]').val());
+    form.append('_wp_http_referer', jQuery('input[name="_wp_http_referer"]').val());
 
     for (var i = 0; i < attachment_urls.length; i++) {
         form.append('attachment_urls[]', attachment_urls[i]);

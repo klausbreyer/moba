@@ -8,6 +8,7 @@
 
     <form action="" method="post" enctype="multipart/form-data" class="moba__form"
           onsubmit="moba_submit(); return false;">
+        <?php wp_nonce_field( 'moba-upload'); ?>
         <label>Title:</br>
             <input type="text" id="title" name="title"/></label><br/>
         <label>Content:</br>
