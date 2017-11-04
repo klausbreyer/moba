@@ -21,13 +21,24 @@ Given that you have LTE or a stable Wifi, there should be no hickups.
 2. Go to the "Mobile Batch" Dashboard page to start uploading
 3. Leave a positive rating.. :)
 
+Note: On some  installations it may be necessary to increase the PHP memory limit. In internal tests, 100M have not always been enough. The recommendation is to set the PHP memory limit to 200M.
+
 == Screenshots ==
 
-1. the form in its empty state
-2. the filled out form
-3. successfull upload
+1. The form in its empty state
+2. The filled out form
+3. Successfull upload
 
 == Changelog ==
+
+= 0.2 =
+The first major upate. Now it is really tested out in the wild.
+* Read exif data and rotate picture of necessary.
+* Added comment/discussion setting for the post.
+* Async upload to handle an unlimited number of pictures and sanitize/validate transferred data.
+* Empty lines between pictures.
+* Set last picture as thumbnail of the posting.
+
 
 = 0.1 =
 The very first public release.
