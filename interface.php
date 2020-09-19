@@ -14,7 +14,7 @@
         <label>Content:</br>
             <textarea name="content" id="content"></textarea></label><br/>
         <label>Files (multiple):</br>
-            <input type="file" name="upload[]" multiple/></label><br/>
+            <input accept="image/*" type="file" name="upload[]" multiple/></label><br/>
 
         <label>Status:</br>
             <select name="status" id="status">

@@ -1,12 +1,12 @@
 === mobile batch ===
 Contributors: klausbreyer
 Author: Klaus Breyer
-Author URI: http://klaus-breyer.de
-Plugin URI: http://klaus-breyer.de/projekte/post-half-life
+Author URI: https://v01.io
+Plugin URI: https://v01.io/2017/11/04/mobile-batch-upload-wordpress-plugin/
 Tags: upload, mobile, images, pictures, batch,
 Requires at least: 3.3
-Tested up to: 4.8.3
-Stable tag: 0.1
+Tested up to: 5.5
+Stable tag: 0.2
 Requires PHP: 5.2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -30,6 +30,9 @@ Note: On some  installations it may be necessary to increase the PHP memory limi
 3. Successfull upload
 
 == Changelog ==
+
+= 0.2.1 =
+Now the input only accepting images. 
 
 = 0.2 =
 The first major upate. Now it is really tested out in the wild.
